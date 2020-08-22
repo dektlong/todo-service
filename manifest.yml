@@ -4,7 +4,6 @@ applications:
     memory: 1G
     path: target/app.jar
     routes:
-    - route: dekt-todo-service.apps.dekt.cf-app.com/api
-
+    - route: dekt-todo.apps.dekt.cf-app.com/api
     services:
     - todo-db
