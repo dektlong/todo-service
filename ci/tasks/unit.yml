@@ -9,5 +9,7 @@ image_resource:
 inputs:
   - name: git-repo
 
+
 run:
-  path: git-repo/ci/tasks/unit.sh
+  path: /bin/sh
+  args: ["git-repo/ci/tasks/unit.sh"]
