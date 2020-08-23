@@ -93,7 +93,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>dekt-todo</finalName>
+		<finalName>dekt-todo-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
