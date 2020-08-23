@@ -2,7 +2,7 @@
 applications:
   - name: dekt-todo-service
     memory: 1G
-    path: target/app.jar
+    path: target/dekt-todo-service.jar
     routes:
     - route: dekt-todo.apps.dekt.cf-app.com/api
     services:
