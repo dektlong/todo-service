@@ -1,38 +1,202 @@
 resources:
-- name: todo-service-docker-image
-  type: docker-image
-  source:
-    username: ((harbor-username))
-    password: ((harbor-password))
-    repository: harbor.apps.cf.tanzutime.com/demo/todo-service
-    email: ((harbor-email))
-
-- name: source-code
+- name: git-repo
   type: git
   source:
-    uri: https://github.com/odedia/todo-service.git
+    uri: {{GIT_REPO}}
+    PASSWORD: {{GIT_PERSONAL_ACCESS_TOKEN}}
     branch: master
 
-- name: cf-push-resource
+- name: push-TAS-TEST-cloud
   type: cf
   source:
-    api: ((cf-api))
-    username: ((cf-user))
-    password: ((cf-password))
-    organization: ((cf-org))
-    space: ((cf-space))
+    api: {{TAS_TEST_API}}
+    username: {{TAS_TEST_USER}}
+    password: {{TAS_TEST_PASS}}
+    organization: {{TAS_TEST_ORG}}
+    space: {{TAS_TEST_SPACE}}
     skip_cert_check: true
 
+- name: push-TAS-UAT-cloud
+  type: cf
+  source:
+    api: {{TAS_UAT_API}}
+    username: {{TAS_UAT_USER}}
+    password: {{TAS_UAT_PASS}}
+    organization: {{TAS_UAT_ORG}}
+    space: {{TAS_UAT_SPACE}}
+    skip_cert_check: true
+
+- name: push-TAS-PROD-cloud
+  type: cf
+  source:
+    api: {{TAS_PROD_API}}
+    username: {{TAS_PROD_USER}}
+    password: {{TAS_PROD_PASS}}
+    organization: {{TAS_PROD_ORG}}
+    space: {{TAS_PROD_SPACE}}
+    skip_cert_check: true
+
+- name: version
+  type: semver
+  source:
+    bucket: {{S3_BUCKET}}
+    key: {{S3_VERSION_FILE}}
+    access_key_id: {{S3_ACCESS_KEY_ID}}
+    secret_access_key: {{S3_SECRET_ACCESS_KEY}}
+    initial_version: 1.0.0
+
+- name: release-candidate
+  type: s3
+  source:
+    bucket: {{S3_BUCKET}}
+    regexp: {{S3_PIPELINE_ARTIFACTS}}
+    access_key_id: {{S3_ACCESS_KEY_ID}}
+    secret_access_key: {{S3_SECRET_ACCESS_KEY}}
+
+- name: production-release
+  type: s3
+  source:
+    bucket: {{S3_BUCKET}}
+    regexp: {{S3_DEPLOYMENTS}}
+    access_key_id: {{S3_ACCESS_KEY_ID}}
+    secret_access_key: {{S3_SECRET_ACCESS_KEY}}
+
+- name: cve-file
+  type: s3
+  source:
+    bucket: {{S3_BUCKET}}
+    regexp: {{S3_BLUE_GREEN}}
+    access_key_id: {{S3_ACCESS_KEY_ID}}
+    secret_access_key: {{S3_SECRET_ACCESS_KEY}}
+
+
 jobs:
-- name: deploy-to-tas4k8s
-  public: true
+- name: unit-tests
+  plan:
+  - get: git-repo
+    trigger: true
+  - task: unit
+    file: git-repo/ci/tasks/unit.yml
+
+- name: build-TODO-service
+  serial_groups: [version]
   serial: true
   plan:
-  - get: source-code
-  - get: todo-service-docker-image
+  - get: git-repo
+    passed: [unit-tests]
     trigger: true
-  - put: cf-push-resource
+  - get: version
+    params: { pre: rc }
+  - task: build-artifact
+    file: git-repo/ci/tasks/build-artifact.yml
+    timeout: 5m
+  - put: release-candidate
     params:
-      manifest: source-code/manifest.yml
-      environment_variables:
-        WAVEFRONT_PROXY_URL: ((wavefront-url))
+      file: artifact-dir/dekt-todo*.jar
+   - put: version
+    params: {file: version/number}
+
+- name: test-TODO-service
+  serial_groups: [version]
+  plan:
+  - aggregate:
+    - get: version
+      passed: [build-TODO-service]
+      trigger: true
+    - get: release-candidate
+      passed: [build-TODO-service]
+    - get: git-repo
+      passed: [build-TODO-service]
+  - put: push-TAS-TEST-cloud
+    params:
+      manifest: git-repo/manifest-test.yml
+      current_app_name: dekt-todo-service-test
+      path: release-candidate/dekt-todo*.jar
+
+- name: integrate-TODO-service
+  serial_groups: [version]
+  plan:
+  - aggregate:
+    - get: release-candidate
+      passed: [test-TODO-service]
+      trigger: true
+    - get: version
+      passed: [test-TODO-service]
+    - get: git-repo
+      passed: [test-TODO-service]
+  - put: push-TAS-UAT-cloud
+    params:
+      manifest: git-repo/manifest-uat.yml
+      current_app_name: dekt-todo-service-uat
+      path: release-candidate/dekt-todo*.jar
+
+- name: ship-TODO-service
+  serial_groups: [version]
+  serial: true
+  plan:
+  - aggregate:
+    - get: release-candidate
+      passed: [integrate-TODO-service]
+      trigger: true
+    - get: version
+      params: { bump: final }
+      passed: [integrate-TODO-service]
+    - get: git-repo
+      passed: [integrate-TODO-service]
+  - task: prepare-final
+    file: git-repo/ci/tasks/prepare-final.yml
+    params:
+      base_name: dekt-todo
+  - put: production-release
+    params:
+      file: final-dir/dekt-todo*.jar
+  - put: push-TAS-PROD-cloud
+    params:
+      manifest: git-repo/manifest-prod.yml
+      current_app_name: dekt-todo-service
+      path: final-dir/dekt-todo*.jar
+
+- name: restart
+  plan:
+  - aggregate:
+    - get: git-repo
+    - get: version
+      passed: [patch]
+      trigger: true
+    - get: cve-file
+  - task: restart-it
+    file: git-repo/ci/tasks/restart.yml
+    params:
+      GIT_REPO: {{GIT_REPO}}
+      PASSWORD: {{GIT_PERSONAL_ACCESS_TOKEN}}
+      S3_BUCKET: {{S3_BUCKET}}
+      S3_BLUE_GREEN_FILE: {{S3_BLUE_GREEN}}
+      S3_ACCESS_KEY_ID: {{S3_ACCESS_KEY_ID}}
+      S3_SECRET_ACCESS_KEY: {{S3_SECRET_ACCESS_KEY}}
+  - put: cve-file
+    params:
+      file: blue-green-output/*
+  # - put: git-repo-blue-green
+  # params:
+  #   repository: git-repo
+
+- name: major
+  serial_groups: [ version ]
+  plan:
+  - put: version
+    params: { bump: major, pre: rc }
+
+- name: minor
+  serial_groups: [ version ]
+  plan:
+  - put: version
+    params: { bump: minor, pre: rc }
+
+- name: patch
+  serial_groups: [ version ]
+  plan:
+  - get: version
+    passed: [ ship-RockMe ]
+    trigger: true
+  - put: version
+    params: { bump: patch }
