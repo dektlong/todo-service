@@ -12,6 +12,9 @@ inputs:
 
 outputs:
   - name: artifact-dir
+  
+caches:
+  - path: .m2
 
 run:
   path: /bin/sh
