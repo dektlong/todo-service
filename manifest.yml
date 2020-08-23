@@ -8,5 +8,5 @@ applications:
     services:
     - todo-db
     env:
-      TO_PROXY_URL: REPLCAE_ME
+      TO_PROXY_URL: http://wavefront-proxy.default.svc.cluster.local:2878
       TO_SERVICE_NAME: dekt-todo-service
