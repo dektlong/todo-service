@@ -92,7 +92,7 @@ jobs:
     timeout: 5m
   - put: release-candidate
     params:
-      file: artifact-dir/dekt-todo*.jar
+      file: artifact-dir/dekt-todo-service.jar
    - put: version
     params: {file: version/number}
 
