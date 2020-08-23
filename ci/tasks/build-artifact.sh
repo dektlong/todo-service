@@ -2,5 +2,5 @@
 set -e
 version=`cat version/number`
 cd git-repo
-mvn clean install
-cp build/libs/*.jar ../artifact-dir/
+./mvnw clean install
+cp target/app.jar ../artifact-dir/
