@@ -1,0 +1,8 @@
+---
+applications:
+  - name: dekt-todo-service-test
+    memory: 1G
+    routes:
+    - route: dekt-todo.apps.dekt.cf-app.com/api
+    services:
+    - todo-db
