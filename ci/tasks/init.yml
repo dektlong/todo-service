@@ -12,4 +12,4 @@ inputs:
 
 run:
   path: /bin/sh
-  args: ["git-repo/ci/tasks/unit.sh"]
+  args: ["git-repo/ci/tasks/init.sh"]
