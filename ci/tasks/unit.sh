@@ -2,5 +2,5 @@
 set -e
 
 cd git-repo
-./mvnw -v
-./mvnw -v
+mvn -v
+mvn -test
