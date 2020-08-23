@@ -7,3 +7,6 @@ applications:
     - route: dekt-todo.apps.dekt.cf-app.com/api
     services:
     - todo-db
+    env:
+      TO_PROXY_URL: REPLCAE_ME
+      TO_SERVICE_NAME: dekt-todo-service
