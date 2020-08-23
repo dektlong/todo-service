@@ -71,7 +71,7 @@ resources:
 
 
 jobs:
-- name: init-tests
+- name: init
   plan:
   - get: git-repo
     trigger: true
@@ -83,7 +83,7 @@ jobs:
   serial: true
   plan:
   - get: git-repo
-    passed: [init-tests]
+    passed: [init]
     trigger: true
   - get: version
     params: { pre: rc }
