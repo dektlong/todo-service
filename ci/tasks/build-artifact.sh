@@ -2,5 +2,5 @@
 set -e
 version=`cat version/number`
 cd git-repo
-./mvnw clean install
+mvn clean install
 cp target/app.jar ../artifact-dir/
