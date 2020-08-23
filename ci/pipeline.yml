@@ -65,7 +65,7 @@ resources:
   type: s3
   source:
     bucket: {{S3_BUCKET}}
-    regexp: {{S3_BLUE_GREEN}}
+    regexp: {{S3_PIPELINE_ARTIFACTS}}
     access_key_id: {{S3_ACCESS_KEY_ID}}
     secret_access_key: {{S3_SECRET_ACCESS_KEY}}
 
