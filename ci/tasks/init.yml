@@ -9,7 +9,9 @@ image_resource:
 inputs:
   - name: git-repo
 
-
+caches:
+  - path: .m2/
+  
 run:
   path: /bin/sh
   args: ["git-repo/ci/tasks/init.sh"]
