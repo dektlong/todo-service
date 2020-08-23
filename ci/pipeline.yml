@@ -71,19 +71,19 @@ resources:
 
 
 jobs:
-- name: unit-tests
+- name: init-tests
   plan:
   - get: git-repo
     trigger: true
-  - task: unit
-    file: git-repo/ci/tasks/unit.yml
+  - task: init
+    file: git-repo/ci/tasks/init.yml
 
 - name: build-TODO-service
   serial_groups: [version]
   serial: true
   plan:
   - get: git-repo
-    passed: [unit-tests]
+    passed: [init-tests]
     trigger: true
   - get: version
     params: { pre: rc }
