@@ -89,7 +89,7 @@ jobs:
     params: { pre: rc }
   - task: build-artifact
     file: git-repo/ci/tasks/build-artifact.yml
-    timeout: 5m
+    timeout: 10m
   - put: release-candidate
     params:
       file: artifact-dir/dekt-todo-service.jar
