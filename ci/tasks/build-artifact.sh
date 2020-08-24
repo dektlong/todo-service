@@ -5,12 +5,6 @@ version=`cat version/number`
 
 cd git-repo
 
-#mvn clean install
-
-echo 
-echo "########################## DEBUG #######################"
-cd target
-ls
-echo
+mvn clean install
 
 cp target/dekt-todo-service.jar ../artifact-dir/
