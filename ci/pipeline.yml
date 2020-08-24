@@ -77,9 +77,6 @@ jobs:
   serial_groups: [git-repo]
   plan:
   - aggregate:
-    - get: version
-      passed: [build-TODO-service]
-      trigger: true
     - get: release-candidate
       passed: [build-TODO-service]
     - get: git-repo
