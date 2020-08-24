@@ -4,8 +4,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: brianbyers/concourse-gradle
-    tag: "latest"
+    repository: djudorange/node-gulp-mocha
     
 inputs:
   - name: git-repo
