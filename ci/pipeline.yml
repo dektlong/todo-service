@@ -40,7 +40,6 @@ resources:
   type: s3
   source:
     bucket: {{S3_BUCKET}}
-    regexp: {{S3_PIPELINE_ARTIFACTS}}
     access_key_id: {{S3_ACCESS_KEY_ID}}
     secret_access_key: {{S3_SECRET_ACCESS_KEY}}
 
@@ -48,7 +47,6 @@ resources:
   type: s3
   source:
     bucket: {{S3_BUCKET}}
-    regexp: {{S3_DEPLOYMENTS}}
     access_key_id: {{S3_ACCESS_KEY_ID}}
     secret_access_key: {{S3_SECRET_ACCESS_KEY}}
 
@@ -62,7 +60,7 @@ jobs:
     file: git-repo/ci/tasks/build-artifact.yml
     timeout: 10m
   - put: release-candidate
-    params: {file: artifact-dir/dekt-todo-service*.jar}
+    params: {file: artifact-dir/dekt-todo-service.jar}
 
 - name: test-TODO-service
   plan:
@@ -73,7 +71,7 @@ jobs:
     params:
       manifest: git-repo/manifest-test.yml
       current_app_name: dekt-todo-service-test
-      path: release-candidate/dekt-todo-service*.jar
+      path: release-candidate/dekt-todo-service.jar
 
 - name: integrate-TODO-service
   plan:
@@ -85,7 +83,7 @@ jobs:
     params:
       manifest: git-repo/manifest-uat.yml
       current_app_name: dekt-todo-service-uat
-      path: release-candidate/dekt-todo-service*.jar
+      path: release-candidate/dekt-todo-service.jar
 
 - name: ship-TODO-service
   plan:
@@ -99,12 +97,12 @@ jobs:
       base_name: dekt-todo-service
   - put: production-release
     params:
-      file: final-dir/dekt-todo-service*.jar
+      file: final-dir/dekt-todo-service.jar
   - put: push-TAS-PROD-cloud
     params:
       manifest: git-repo/manifest-prod.yml
       current_app_name: dekt-todo-service
-      path: final-dir/dekt-todo-service*.jar
+      path: final-dir/dekt-todo-service.jar
 
 - name: patch-TODO-service
   plan:
