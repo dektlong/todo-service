@@ -73,11 +73,11 @@ jobs:
       current_app_name: dekt-todo-service-test
       path: release-candidate/dekt-todo-service.jar
 
-- name: integrate-TODO-service
+- name: integrate-TODO-SERVICE
   plan:
   - aggregate:
     - get: release-candidate
-      passed: [test-TODO-service]
+      passed: [test-TODO-SERVICE]
       trigger: true
   - put: push-TAS-UAT-cloud
     params:
@@ -85,11 +85,11 @@ jobs:
       current_app_name: dekt-todo-service-uat
       path: release-candidate/dekt-todo-service.jar
 
-- name: ship-TODO-service
+- name: ship-TODO-SERVICE
   plan:
   - aggregate:
     - get: release-candidate
-      passed: [integrate-TODO-service]
+      passed: [integrate-TODO-SERVICE]
       trigger: true   
   - task: prepare-final
     file: git-repo/ci/tasks/prepare-final.yml
@@ -104,9 +104,9 @@ jobs:
       current_app_name: dekt-todo-service
       path: final-dir/dekt-todo-service.jar
 
-- name: patch-TODO-service
+- name: patch-TODO-SERVICE
   plan:
   - get: production-release
-    passed: [ ship-TODO-service ]
+    passed: [ ship-TODO-SERVICE ]
     trigger: true
 
