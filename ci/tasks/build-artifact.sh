@@ -5,9 +5,7 @@ version=`cat version/number`
 
 cd git-repo
 
-#mvn clean install
-
-mvn install
+mvn clean install
 
 echo 
 echo "########################## DEBUG #######################"
