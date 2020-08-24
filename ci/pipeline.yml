@@ -36,15 +36,6 @@ resources:
     space: {{TAS_PROD_SPACE}}
     skip_cert_check: true
 
-- name: version
-  type: semver
-  source:
-    bucket: {{S3_BUCKET}}
-    key: {{S3_VERSION_FILE}}
-    access_key_id: {{S3_ACCESS_KEY_ID}}
-    secret_access_key: {{S3_SECRET_ACCESS_KEY}}
-    initial_version: 1.0.0
-
 - name: release-candidate
   type: s3
   source:
@@ -61,15 +52,6 @@ resources:
     access_key_id: {{S3_ACCESS_KEY_ID}}
     secret_access_key: {{S3_SECRET_ACCESS_KEY}}
 
-- name: cve-file
-  type: s3
-  source:
-    bucket: {{S3_BUCKET}}
-    regexp: {{S3_PIPELINE_ARTIFACTS}}
-    access_key_id: {{S3_ACCESS_KEY_ID}}
-    secret_access_key: {{S3_SECRET_ACCESS_KEY}}
-
-
 jobs:
 - name: init
   plan:
@@ -79,24 +61,20 @@ jobs:
     file: git-repo/ci/tasks/init.yml
 
 - name: build-TODO-service
-  serial_groups: [version]
+  serial_groups: [git-repo]
   serial: true
   plan:
   - get: git-repo
     passed: [init]
     trigger: true
-  - get: version
-    params: { pre: rc }
   - task: build-artifact
     file: git-repo/ci/tasks/build-artifact.yml
     timeout: 10m
   - put: release-candidate
     params: {file: artifact-dir/dekt-todo-service*.jar}
-  - put: version
-    params: {file: version/number}
 
 - name: test-TODO-service
-  serial_groups: [version]
+  serial_groups: [git-repo]
   plan:
   - aggregate:
     - get: version
@@ -113,14 +91,12 @@ jobs:
       path: release-candidate/dekt-todo-service*.jar
 
 - name: integrate-TODO-service
-  serial_groups: [version]
+  serial_groups: [git-repo]
   plan:
   - aggregate:
     - get: release-candidate
       passed: [test-TODO-service]
       trigger: true
-    - get: version
-      passed: [test-TODO-service]
     - get: git-repo
       passed: [test-TODO-service]
   - put: push-TAS-UAT-cloud
@@ -130,22 +106,19 @@ jobs:
       path: release-candidate/dekt-todo-service*.jar
 
 - name: ship-TODO-service
-  serial_groups: [version]
+  serial_groups: [git-repo]
   serial: true
   plan:
   - aggregate:
     - get: release-candidate
       passed: [integrate-TODO-service]
       trigger: true
-    - get: version
-      params: { bump: final }
-      passed: [integrate-TODO-service]
     - get: git-repo
       passed: [integrate-TODO-service]
   - task: prepare-final
     file: git-repo/ci/tasks/prepare-final.yml
     params:
-      base_name: dekt-todo
+      base_name: dekt-todo-service
   - put: production-release
     params:
       file: final-dir/dekt-todo-service*.jar
@@ -155,24 +128,10 @@ jobs:
       current_app_name: dekt-todo-service
       path: final-dir/dekt-todo-service*.jar
 
-- name: major
-  serial_groups: [ version ]
-  plan:
-  - put: version
-    params: { bump: major, pre: rc }
-
-- name: minor
-  serial_groups: [ version ]
-  plan:
-  - put: version
-    params: { bump: minor, pre: rc }
-
 - name: patch-TODO-service
-  serial_groups: [ version ]
+  serial_groups: [ git-repo ]
   plan:
-  - get: cve-file
-  - get: version
+  - get: production-release
     passed: [ ship-TODO-service ]
     trigger: true
-  - put: version
-    params: { bump: patch }
+
