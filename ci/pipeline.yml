@@ -5,6 +5,13 @@ resources:
     uri: {{GIT_REPO}}
     PASSWORD: {{GIT_PERSONAL_ACCESS_TOKEN}}
     branch: master
+    
+- name: todo-service-docker-image
+  type: docker-image
+  source:
+    username: ((HARBOR-USERNAME))
+    password: ((HARBOR-PASSWORD))
+    repository: ((HARBOR-REPO))
 
 - name: push-TAS-TEST-cloud
   type: cf
@@ -66,12 +73,13 @@ jobs:
   plan:
   - aggregate:
     - get: release-candidate
+    - get: todo-service-docker-image
       passed: [build-TODO-SERVICE]
   - put: push-TAS-TEST-cloud
     params:
       manifest: git-repo/manifest-test.yml
-      current_app_name: dekt-todo-service-test
-      path: release-candidate/dekt-todo-service.jar
+      #current_app_name: dekt-todo-service-test
+      #path: release-candidate/dekt-todo-service.jar
 
 - name: integrate-TODO-SERVICE
   plan:
