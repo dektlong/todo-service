@@ -86,6 +86,7 @@ jobs:
       path: release-candidate/dekt-todo-service.jar
 
 - name: ship-TODO-SERVICE
+  serial: true
   plan:
   - aggregate:
     - get: release-candidate
