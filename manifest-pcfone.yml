@@ -3,7 +3,7 @@ applications:
   - name: dekt-todo-service
     memory: 1G
     routes:
-    - route: dekt-todo.apps.run.pcfone.io/api
+    - route: dekt-todo.apps.pcfone.io/api
     services:
     - todo-db
     env:
