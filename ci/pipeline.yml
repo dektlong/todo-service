@@ -74,12 +74,9 @@ jobs:
     params: {file: artifact-dir/dekt-todo-service*.jar}
 
 - name: test-TODO-service
-  serial_groups: [git-repo]
   plan:
   - aggregate:
     - get: release-candidate
-      passed: [build-TODO-service]
-    - get: git-repo
       passed: [build-TODO-service]
   - put: push-TAS-TEST-cloud
     params:
@@ -88,14 +85,11 @@ jobs:
       path: release-candidate/dekt-todo-service*.jar
 
 - name: integrate-TODO-service
-  serial_groups: [git-repo]
   plan:
   - aggregate:
     - get: release-candidate
       passed: [test-TODO-service]
       trigger: true
-    - get: git-repo
-      passed: [test-TODO-service]
   - put: push-TAS-UAT-cloud
     params:
       manifest: git-repo/manifest-uat.yml
@@ -103,15 +97,11 @@ jobs:
       path: release-candidate/dekt-todo-service*.jar
 
 - name: ship-TODO-service
-  serial_groups: [git-repo]
-  serial: true
   plan:
   - aggregate:
     - get: release-candidate
       passed: [integrate-TODO-service]
-      trigger: true
-    - get: git-repo
-      passed: [integrate-TODO-service]
+      trigger: true   
   - task: prepare-final
     file: git-repo/ci/tasks/prepare-final.yml
     params:
@@ -126,7 +116,6 @@ jobs:
       path: final-dir/dekt-todo-service*.jar
 
 - name: patch-TODO-service
-  serial_groups: [ git-repo ]
   plan:
   - get: production-release
     passed: [ ship-TODO-service ]
