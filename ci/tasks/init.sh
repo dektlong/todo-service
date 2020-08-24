@@ -4,4 +4,4 @@ cd git-repo
 
 mvn -v
 
-mvn test
+#mvn test
