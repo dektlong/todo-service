@@ -5,6 +5,6 @@ cd git-repo
 
 #mvn clean install
 
-mvn install -pl $moduleName -am
+mvn clean install -DskipTests
 
 cp target/dekt-todo-service.jar ../artifact-dir/
