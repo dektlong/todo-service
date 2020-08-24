@@ -9,4 +9,9 @@ cd git-repo
 
 mvn install
 
+echo 
+echo "########################## DEBUG #######################"
+ls
+echo
+
 cp target/dekt-todo-service.jar ../artifact-dir/
