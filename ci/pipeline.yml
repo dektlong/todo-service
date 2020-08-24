@@ -62,6 +62,7 @@ jobs:
 - name: build-TODO-SERVICE
   plan:
   - get: git-repo
+  - get: todo-service-docker-image
     trigger: true
   - task: build-artifact
     file: git-repo/ci/tasks/build-artifact.yml
