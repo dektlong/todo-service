@@ -91,7 +91,7 @@ jobs:
     file: git-repo/ci/tasks/build-artifact.yml
     timeout: 10m
   - put: release-candidate
-    params: {file: artifact-dir/dekt-todo*.jar}
+    params: {file: artifact-dir/dekt-todo-service*.jar}
   - put: version
     params: {file: version/number}
 
@@ -110,7 +110,7 @@ jobs:
     params:
       manifest: git-repo/manifest-test.yml
       current_app_name: dekt-todo-service-test
-      path: release-candidate/dekt-todo*.jar
+      path: release-candidate/dekt-todo-service*.jar
 
 - name: integrate-TODO-service
   serial_groups: [version]
@@ -127,7 +127,7 @@ jobs:
     params:
       manifest: git-repo/manifest-uat.yml
       current_app_name: dekt-todo-service-uat
-      path: release-candidate/dekt-todo*.jar
+      path: release-candidate/dekt-todo-service*.jar
 
 - name: ship-TODO-service
   serial_groups: [version]
@@ -148,12 +148,12 @@ jobs:
       base_name: dekt-todo
   - put: production-release
     params:
-      file: final-dir/dekt-todo*.jar
+      file: final-dir/dekt-todo-service*.jar
   - put: push-TAS-PROD-cloud
     params:
       manifest: git-repo/manifest-prod.yml
       current_app_name: dekt-todo-service
-      path: final-dir/dekt-todo*.jar
+      path: final-dir/dekt-todo-service*.jar
 
 - name: major
   serial_groups: [ version ]
