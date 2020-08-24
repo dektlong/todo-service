@@ -53,19 +53,10 @@ resources:
     secret_access_key: {{S3_SECRET_ACCESS_KEY}}
 
 jobs:
-- name: init
-  plan:
-  - get: git-repo
-    trigger: true
-  - task: init
-    file: git-repo/ci/tasks/init.yml
 
 - name: build-TODO-service
-  serial_groups: [git-repo]
-  serial: true
   plan:
   - get: git-repo
-    passed: [init]
     trigger: true
   - task: build-artifact
     file: git-repo/ci/tasks/build-artifact.yml
