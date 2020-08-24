@@ -52,7 +52,7 @@ resources:
 
 jobs:
 
-- name: build-TODO-service
+- name: build-TODO-SERVICE
   plan:
   - get: git-repo
     trigger: true
@@ -62,11 +62,11 @@ jobs:
   - put: release-candidate
     params: {file: artifact-dir/dekt-todo-service.jar}
 
-- name: test-TODO-service
+- name: test-TODO-SERVICE
   plan:
   - aggregate:
     - get: release-candidate
-      passed: [build-TODO-service]
+      passed: [build-TODO-SERVICE]
   - put: push-TAS-TEST-cloud
     params:
       manifest: git-repo/manifest-test.yml
