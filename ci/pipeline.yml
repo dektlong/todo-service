@@ -52,10 +52,18 @@ resources:
 
 jobs:
 
+- name: unit-test
+  plan:
+  - get: git-repo
+    trigger: true
+  - task: unit-test
+    file: git-repo/ci/tasks/unit.yml  
+    
 - name: build-TODO-SERVICE
   plan:
   - get: git-repo
     trigger: true
+    passed: [unit-test]
   - task: build-artifact
     file: git-repo/ci/tasks/build-artifact.yml
     timeout: 10m
