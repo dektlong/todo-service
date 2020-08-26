@@ -25,7 +25,7 @@ EOF
 
 #pushd ${artifact}
   echo "Packaging JAR"
-  mvn clean package
+  mvn clean install
 #popd
 
 jar_count=`find ${artifact}/target -type f -name *.jar | wc -l`
