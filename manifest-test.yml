@@ -1,6 +1,6 @@
 - name: dekt-todo-service-test
     memory: 1G
-    path: todo-service/target/app.jar
+    path: target/app.jar
     routes:
     - route: dekt-todo.cfapps.io/api
     services:
