@@ -4,7 +4,7 @@ applications:
     memory: 1G
     path: target/app.jar
     routes:
-    - route: dekt-todo.apps.rattata.cf-app.com/api
+    - route: dekt-todo.cfapps.io/api
     services:
     - todo-db
     env:
