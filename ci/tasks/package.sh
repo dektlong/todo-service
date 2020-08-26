@@ -23,7 +23,6 @@ cat > ${M2_HOME}/settings.xml <<EOF
  
 EOF
 
-cd ../../
 ls
 echo "Packaging JAR"
 ${artifact}/mvnw clean package
