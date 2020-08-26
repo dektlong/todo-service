@@ -52,6 +52,7 @@ jobs:
   plan:
   - get: source-code
     trigger: true
+    passed: [test-TODO-SERVICE]
   - task: package
     file: source-code/ci/tasks/package.yml
   - put: TAS-UAT-cloud
@@ -64,6 +65,7 @@ jobs:
   plan:
   - get: source-code
     trigger: true
+    passed: [integrate-TODO-SERVICE]
   - task: package
     file: source-code/ci/tasks/package.yml
   - put: TAS-PROD-cloud
