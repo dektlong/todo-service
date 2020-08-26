@@ -3,7 +3,7 @@ resources:
 - name: source-code
   type: git
   source:
-    uri: {{TODO_SERVICE_GIT_REPO}}
+    uri: ((TODO_SERVICE_GIT_REPO))
     branch: master
     paths:
     - todo-service/**/*
