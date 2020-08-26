@@ -6,6 +6,16 @@ resources:
     uri: https://github.com/dektlong/todo-service.git
     branch: master
 
+- name: TAS-TEST-cloud
+  type: cf
+  source:
+    api: {{TAS_TEST_API}}
+    username: {{TAS_TEST_USER}}
+    password: {{TAS_TEST_PASS}}
+    organization: {{TAS_TEST_ORG}}
+    space: {{TAS_TEST_SPACE}}
+    skip_cert_check: true
+    
 - name: TAS-UAT-cloud
   type: cf
   source:
@@ -17,7 +27,19 @@ resources:
     skip_cert_check: true
 
 jobs:
-- name: uat-TODO-SERVICE
+- name: test-TODO-SERVICE
+  public: true
+  plan:
+  - get: source-code
+    trigger: true
+  - task: package
+    file: source-code/ci/tasks/package.yml
+  - put: TAS-TEST-cloud
+    params:
+      manifest: source-code/manifest-test.yml
+      path: package-output/app.jar
+
+- name: integrate-TODO-SERVICE
   public: true
   plan:
   - get: source-code
@@ -27,5 +49,5 @@ jobs:
   - put: TAS-UAT-cloud
     params:
       manifest: source-code/manifest-uat.yml
-      path: package-output/app.jar
+      path: package-output/app.jar      
       
