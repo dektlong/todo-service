@@ -2,7 +2,7 @@
 
 set -e -u -x
 
-artifact=source-code/todo-service
+artifact=source-code
 
 export ROOT_FOLDER=$( pwd )
 M2_HOME=${HOME}/.m2
@@ -23,10 +23,10 @@ cat > ${M2_HOME}/settings.xml <<EOF
  
 EOF
 
-pushd ${artifact}
+#pushd ${artifact}
   echo "Packaging JAR"
   mvn clean package
-popd
+#popd
 
 jar_count=`find ${artifact}/target -type f -name *.jar | wc -l`
 
