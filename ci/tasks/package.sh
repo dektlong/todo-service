@@ -28,6 +28,8 @@ cd ${artifact}
 echo "Packaging JAR"
 ./mvnw clean install
 
+cd ..
+
 jar_count=`find ${artifact}/target -type f -name *.jar | wc -l`
 
 if [ $jar_count -gt 1 ]; then
