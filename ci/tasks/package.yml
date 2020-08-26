@@ -13,7 +13,8 @@ outputs:
 - name: package-output
 
 run:
-  path: source-code/ci/tasks/package.sh
+  path: /bin/sh
+  args: ["source-code/ci/tasks/package.sh"]
 
 caches:
   - path: .m2/
