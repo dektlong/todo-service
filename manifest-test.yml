@@ -1,13 +1,13 @@
 ---
 applications:
-- name: dekt-todo-service-test
-  buildpacks: 
-  - buildpack_URL: https://github.com/cloudfoundry/java-buildpack.git#v4.32.1
-  memory: 1G
-  path: target/app.jar
-  routes:
-  - route: dekt-todo.cfapps.io/api
-  services:
-  - todo-db
-  env:
-   TO_SERVICE_NAME: dekt-todo-service-TEST
+  - name: dekt-todo-service-test
+    buildpacks: 
+      - buildpack_URL: https://github.com/cloudfoundry/java-buildpack.git#v4.32.1
+    memory: 1G
+    path: target/app.jar
+    routes:
+      - route: dekt-todo.cfapps.io/api
+    services:
+      - todo-db
+    env:
+       TO_SERVICE_NAME: dekt-todo-service-TEST
