@@ -43,9 +43,9 @@ jobs:
     trigger: true
   - task: package
     file: source-code/ci/tasks/package.yml
-  - put: TAS-TEST-cloud
+  - put: TAS-PROD-cloud
     params:
-      manifest: source-code/manifest-test.yml
+      manifest: source-code/manifest-prod.yml
       path: package-output/app.jar
 
 - name: integrate-TODO-SERVICE
