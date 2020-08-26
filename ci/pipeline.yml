@@ -1,120 +1,33 @@
+  
 resources:
-- name: git-repo
+- name: source-code
   type: git
   source:
     uri: {{GIT_REPO}}
-    PASSWORD: {{GIT_PERSONAL_ACCESS_TOKEN}}
     branch: master
-
-- name: push-TAS-TEST-cloud
-  type: cf
-  source:
-    api: {{TAS_TEST_API}}
-    username: {{TAS_TEST_USER}}
-    password: {{TAS_TEST_PASS}}
-    organization: {{TAS_TEST_ORG}}
-    space: {{TAS_TEST_SPACE}}
-    skip_cert_check: true
+    paths:
+    - todo-service/**/*
+    - todo-service/*
 
 - name: push-TAS-UAT-cloud
   type: cf
   source:
-    api: {{TAS_UAT_API}}
-    username: {{TAS_UAT_USER}}
-    password: {{TAS_UAT_PASS}}
-    organization: {{TAS_UAT_ORG}}
-    space: {{TAS_UAT_SPACE}}
-    skip_cert_check: true
-
-- name: push-TAS-PROD-cloud
-  type: cf
-  source:
-    api: {{TAS_PROD_API}}
-    username: {{TAS_PROD_USER}}
-    password: {{TAS_PROD_PASS}}
-    organization: {{TAS_PROD_ORG}}
-    space: {{TAS_PROD_SPACE}}
-    skip_cert_check: true
-
-- name: release-candidate
-  type: s3
-  source:
-    bucket: {{S3_BUCKET}}
-    access_key_id: {{S3_ACCESS_KEY_ID}}
-    secret_access_key: {{S3_SECRET_ACCESS_KEY}}
-
-- name: production-release
-  type: s3
-  source:
-    bucket: {{S3_BUCKET}}
-    access_key_id: {{S3_ACCESS_KEY_ID}}
-    secret_access_key: {{S3_SECRET_ACCESS_KEY}}
+    api: ((TAS_UAT_API))
+    username: ((TAS_UAT_USER))
+    password: ((TAS_UAT_PASS))
+    organization: ((TAS_UAT_ORG))
+    space: ((TAS_UAT_SPACE))
+    skip_cert_check: false
 
 jobs:
-
-- name: unit-test
+- name: build-jar
+  public: true
   plan:
-  - get: git-repo
+  - get: source-code
     trigger: true
-  - task: unit-test
-    file: git-repo/ci/tasks/unit.yml  
-    
-- name: build-TODO-SERVICE
-  plan:
-  - get: git-repo
-    trigger: true
-    passed: [unit-test]
-  - task: build-artifact
-    file: git-repo/ci/tasks/build-artifact.yml
-    timeout: 10m
-  - put: release-candidate
-    params: {file: artifact-dir/dekt-todo-service.jar}
-
-- name: test-TODO-SERVICE
-  plan:
-  - aggregate:
-    - get: release-candidate
-      passed: [build-TODO-SERVICE]
-  - put: push-TAS-TEST-cloud
-    params:
-      manifest: git-repo/manifest-test.yml
-      current_app_name: dekt-todo-service-test
-      path: release-candidate/dekt-todo-service.jar
-
-- name: integrate-TODO-SERVICE
-  plan:
-  - aggregate:
-    - get: release-candidate
-      passed: [test-TODO-SERVICE]
-      trigger: true
+  - task: package
+    file: source-code/todo-service/ci/tasks/package.yml
   - put: push-TAS-UAT-cloud
     params:
-      manifest: git-repo/manifest-uat.yml
-      current_app_name: dekt-todo-service-uat
-      path: release-candidate/dekt-todo-service.jar
-
-- name: ship-TODO-SERVICE
-  serial: true
-  plan:
-  - aggregate:
-    - get: release-candidate
-      passed: [integrate-TODO-SERVICE]
-      trigger: true   
-  - task: prepare-final
-    file: git-repo/ci/tasks/prepare-final.yml
-    params:
-      base_name: dekt-todo-service
-  - put: production-release
-    params:
-      file: final-dir/dekt-todo-service.jar
-  - put: push-TAS-PROD-cloud
-    params:
-      manifest: git-repo/manifest-prod.yml
-      current_app_name: dekt-todo-service
-      path: final-dir/dekt-todo-service.jar
-
-- name: patch-TODO-SERVICE
-  plan:
-  - get: production-release
-    passed: [ ship-TODO-SERVICE ]
-    trigger: true
+      manifest: source-code/todo-service/manifest-uat.yml
+      path: package-output/app.jar
