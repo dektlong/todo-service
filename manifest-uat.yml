@@ -2,11 +2,10 @@
 applications:
   - name: dekt-todo-service-uat
     memory: 1G
+    path: todo-service/target/app.jar
     routes:
-    - route: dekt-todo.apps.dekt.cf-app.com/api
+    - route: dekt-todo.apps.pcfone.io/api
     services:
     - todo-db
     env:
       TO_SERVICE_NAME: dekt-todo-service-uat
-      #to bypass issue null token error with wavefront proxy, wavefront token and uri are defined in application.properties
-      #TO_PROXY_URL: http://wavefront-proxy.default.svc.cluster.local:2878 
