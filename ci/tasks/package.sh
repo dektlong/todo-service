@@ -26,7 +26,7 @@ EOF
 cd ${artifact}
 
 echo "Packaging JAR"
-./mvnw clean package
+./mvnw clean package -X
 
 jar_count=`find ${artifact}/target -type f -name *.jar | wc -l`
 
