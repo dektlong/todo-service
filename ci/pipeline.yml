@@ -9,7 +9,7 @@ resources:
     - todo-service/**/*
     - todo-service/*
 
-- name: push-TAS-UAT-cloud
+- name: TAS-UAT-cloud
   type: cf
   source:
     api: ((TAS_UAT_API))
@@ -20,14 +20,14 @@ resources:
     skip_cert_check: false
 
 jobs:
-- name: build-jar
+- name: deploy-TODO-SERVICE
   public: true
   plan:
   - get: source-code
     trigger: true
   - task: package
     file: source-code/todo-service/ci/tasks/package.yml
-  - put: push-TAS-UAT-cloud
+  - put: TAS-UAT-cloud
     params:
       manifest: source-code/todo-service/manifest-uat.yml
       path: package-output/app.jar
