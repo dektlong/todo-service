@@ -23,7 +23,8 @@ cat > ${M2_HOME}/settings.xml <<EOF
  
 EOF
 
-  echo "Packaging JAR"
+cd ../../
+echo "Packaging JAR"
   ./mvnw clean package
 
 jar_count=`find ${artifact}/target -type f -name *.jar | wc -l`
