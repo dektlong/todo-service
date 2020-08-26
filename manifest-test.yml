@@ -1,7 +1,8 @@
 ---
 applications:
   - name: dekt-todo-service-test
-    buildpack: https://github.com/cloudfoundry/java-buildpack/releases/tag/v4.32.1
+    buildpacks: 
+    - buildpack_URL: https://github.com/cloudfoundry/java-buildpack.git#v4.32.1
     memory: 1G
     path: target/app.jar
     routes:
