@@ -8,4 +8,4 @@ applications:
     services:
     - todo-db
     env:
-      TO_SERVICE_NAME: dekt-todo-service-uat
+      TO_SERVICE_NAME: dekt-todo-service-UAT
