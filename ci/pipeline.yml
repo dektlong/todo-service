@@ -17,8 +17,7 @@ resources:
     skip_cert_check: true
 
 jobs:
-      
- - name: uat-TODO-SERVICE
+- name: uat-TODO-SERVICE
   public: true
   plan:
   - get: source-code
