@@ -24,6 +24,7 @@ cat > ${M2_HOME}/settings.xml <<EOF
 EOF
 
 cd ../../
+pwd
 echo "Packaging JAR"
   ./mvnw clean package
 
