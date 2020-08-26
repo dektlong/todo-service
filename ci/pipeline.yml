@@ -23,8 +23,8 @@ jobs:
   - get: source-code
     trigger: true
   - task: package
-    file: source-code/todo-service/ci/tasks/package.yml
+    file: source-code/ci/tasks/package.yml
   - put: TAS-UAT-cloud
     params:
-      manifest: source-code/todo-service/manifest-uat.yml
+      manifest: source-code/manifest-uat.yml
       path: package-output/app.jar
