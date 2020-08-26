@@ -25,10 +25,19 @@ resources:
     organization: {{TAS_UAT_ORG}}
     space: {{TAS_UAT_SPACE}}
     skip_cert_check: true
+    
+- name: TAS-PROD-cloud
+  type: cf
+  source:
+    api: {{TAS_PROD_API}}
+    username: {{TAS_PROD_USER}}
+    password: {{TAS_PROD_PASS}}
+    organization: {{TAS_PROD_ORG}}
+    space: {{TAS_PROD_SPACE}}
+    skip_cert_check: true
 
 jobs:
 - name: test-TODO-SERVICE
-  public: true
   plan:
   - get: source-code
     trigger: true
@@ -40,7 +49,6 @@ jobs:
       path: package-output/app.jar
 
 - name: integrate-TODO-SERVICE
-  public: true
   plan:
   - get: source-code
     trigger: true
@@ -49,5 +57,16 @@ jobs:
   - put: TAS-UAT-cloud
     params:
       manifest: source-code/manifest-uat.yml
-      path: package-output/app.jar      
+      path: package-output/app.jar
       
+- name: ship-TODO-SERVICE
+  serial: true
+  plan:
+  - get: source-code
+    trigger: true
+  - task: package
+    file: source-code/ci/tasks/package.yml
+  - put: TAS-UAT-cloud
+    params:
+      manifest: source-code/manifest-uat.yml
+      path: package-output/app.jar   
