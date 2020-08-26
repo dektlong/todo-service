@@ -1,9 +1,9 @@
 - name: dekt-todo-service-test
-    memory: 1G
-    path: target/app.jar
-    routes:
-    - route: dekt-todo.cfapps.io/api
-    services:
-    - todo-db
-    env:
-      TO_SERVICE_NAME: dekt-todo-service-TEST
+  memory: 1G
+  path: target/app.jar
+  routes:
+  - route: dekt-todo.cfapps.io/api
+  services:
+  - todo-db
+  env:
+   TO_SERVICE_NAME: dekt-todo-service-TEST
