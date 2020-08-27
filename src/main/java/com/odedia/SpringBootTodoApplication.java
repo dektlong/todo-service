@@ -76,7 +76,6 @@ class RestRepositoryConfigurator implements RepositoryRestConfigurer {
 	@Override
 	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
 		config.exposeIdsFor(Todo.class);
-		System.out.println("*********************** todo="+todo.getTitle()+"**************************");
 	}
 }
 
