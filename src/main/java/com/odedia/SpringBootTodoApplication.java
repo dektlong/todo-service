@@ -62,7 +62,6 @@ interface TodoRepository extends JpaRepository<Todo, Long> {
 class TaskEventHandler {
 	@HandleBeforeSave
 	public void handleBeforeSave(Todo todo) {
-		System.out.println("*********************** todo="+todo.getTitle());
 		log.info("Saving todo: {}", todo.getTitle());
 		if (todo.getCompleted()) {
 			log.info("This Todo is completed: {}", todo.getTitle());
@@ -77,6 +76,7 @@ class RestRepositoryConfigurator implements RepositoryRestConfigurer {
 	@Override
 	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
 		config.exposeIdsFor(Todo.class);
+		System.out.println("*********************** todo="+todo.getTitle()+"**************************");
 	}
 }
 
