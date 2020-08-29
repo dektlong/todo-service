@@ -1,0 +1,13 @@
+---
+applications:
+  - name: dekt-todo-service
+    memory: 1G
+    image: dektlong/dekt-todo-service:latest
+    routes:
+    - route: dekt-todo.apps.dekt.cf-app.com/api
+    services:
+    - todo-db
+    env:
+      TO_SERVICE_NAME: dekt-todo-service-test
+
+      #TO_PROXY_URL: http://wavefront-proxy.default.svc.cluster.local:2878 
