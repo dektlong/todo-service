@@ -2,7 +2,7 @@
 applications:
   - name: dekt-todo-service-uat
     memory: 1G
-    path: target/app.jar
+    path: target/dekt-todo-service.jar
     routes:
     - route: dekt-todo.apps.pcfone.io/api
     services:
