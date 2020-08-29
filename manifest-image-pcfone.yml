@@ -4,7 +4,7 @@ applications:
     memory: 1G
     image: dektlong/dekt-todo-service:latest
     routes:
-    - route: dekt-todo.apps.dekt.cf-app.com/api
+    - route: dekt-todo.apps.pcfone.io/api
     services:
     - todo-db
     env:
