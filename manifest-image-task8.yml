@@ -8,6 +8,6 @@ applications:
     services:
     - todo-db
     env:
-      TO_SERVICE_NAME: dekt-todo-service
-      #to bypass issue null token error with wavefront proxy, wavefront token and uri are defined in application.properties
+      TO_SERVICE_NAME: dekt-todo-service-prod
+
       #TO_PROXY_URL: http://wavefront-proxy.default.svc.cluster.local:2878 
