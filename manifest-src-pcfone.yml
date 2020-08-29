@@ -1,6 +1,6 @@
 ---
 applications:
-  - name: dekt-todo-service-uat
+  - name: dekt-todo-service
     memory: 1G
     path: target/dekt-todo-service.jar
     routes:
