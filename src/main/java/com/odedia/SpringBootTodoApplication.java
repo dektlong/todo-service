@@ -54,9 +54,9 @@ class Todo {
 	private Boolean completed = false;
 	
 	@PreUpdate
-    	public void preUpdateFunction(){
-        log.info("Adding data to title");
-        this.title = this.title + " with more infofrmation!";
+    	public void preUpdateFunction()
+	{
+                this.title = this.title + " with more infofrmation!";
 	}
 }
 
