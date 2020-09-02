@@ -51,6 +51,12 @@ class Todo {
 	@NotNull
 	private String title;
 	private Boolean completed = false;
+	
+	@PreUpdate
+    	public void preUpdateFunction(){
+        log.info("Adding data to title");
+        this.title = this.title + " with more infofrmation!";
+	}
 }
 
 @RepositoryRestResource(collectionResourceRel = "todos", path = "todos")
