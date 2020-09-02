@@ -56,9 +56,8 @@ class Todo {
 	@PrePersist
     	public void updateTodoBeforeSaving()
 	{
-                this.title = this.title + " with more infofrmation!";
-		System.out.println ("************ I AM IN @PrePersist **********");
-		System.out.println ("this.title=" + this.title  );
+                //this.title = this.title.toUpperCase();
+		this.title = this.title.toLowerCase();
 	}
 }
 
