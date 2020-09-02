@@ -69,7 +69,7 @@ interface TodoRepository extends JpaRepository<Todo, Long> {
 class TaskEventHandler {
 	@HandleBeforeSave
 	public void handleBeforeSave(Todo todo) {
-		todo.setTitle(todo.getTitle()+"*** now I am blue ***");
+		//imutable, use only for log entry
 	}
 }
 
