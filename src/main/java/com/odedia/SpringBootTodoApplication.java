@@ -56,8 +56,8 @@ class Todo {
 	@PrePersist
     	public void updateTodoBeforeSaving()
 	{
-                //this.title = this.title.toUpperCase();
-		this.title = this.title.toLowerCase();
+                this.title = this.title.toUpperCase();
+		//this.title = this.title.toLowerCase();
 	}
 }
 
