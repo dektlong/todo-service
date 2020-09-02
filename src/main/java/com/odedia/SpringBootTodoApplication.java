@@ -58,6 +58,7 @@ class Todo {
 	{
                 this.title = this.title + " with more infofrmation!";
 		System.out.println ("************ I AM IN @PrePersist **********");
+		System.out.println ("this.title=" + this.title  );
 	}
 }
 
