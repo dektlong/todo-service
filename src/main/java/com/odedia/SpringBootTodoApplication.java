@@ -3,7 +3,7 @@ package com.odedia;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.PreUpdate;
+import javax.persistence.PrePersist;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -53,8 +53,8 @@ class Todo {
 	private String title;
 	private Boolean completed = false;
 	
-	@PreUpdate
-    	public void preUpdateFunction()
+	@PrePersist
+    	public void updateTodoBeforeSaving()
 	{
                 this.title = this.title + " with more infofrmation!";
 	}
